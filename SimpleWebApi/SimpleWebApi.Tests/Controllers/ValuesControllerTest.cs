@@ -7,12 +7,21 @@ using System.Web.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWebApi;
 using SimpleWebApi.Controllers;
+using SimpleAPIService;
 
 namespace SimpleWebApi.Tests.Controllers
 {
     [TestClass]
     public class ValuesControllerTest
     {
+        [TestInitialize]
+        public void ServiceCreation()
+        {
+            var mockService = new Moq.Mock<IAPIService>();
+        }
+
+
+
         [TestMethod]
         public void Get_ReturnsItemsPosted()
         {
