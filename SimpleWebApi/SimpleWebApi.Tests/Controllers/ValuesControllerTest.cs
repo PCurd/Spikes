@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWebApi;
 using SimpleWebApi.Controllers;
 using SimpleAPIService;
+using Moq;
 
 namespace SimpleWebApi.Tests.Controllers
 {
@@ -17,7 +18,7 @@ namespace SimpleWebApi.Tests.Controllers
         [TestInitialize]
         public void ServiceCreation()
         {
-            var mockService = new Moq.Mock<IAPIService>();
+            var mockService = new Mock<IAPIService>();
         }
 
 
@@ -26,7 +27,8 @@ namespace SimpleWebApi.Tests.Controllers
         public void Get_ReturnsItemsPosted()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            var service = new Mock<IAPIService>();
+            ValuesController controller = new ValuesController(service.Object);
             controller.Post("TestValue1");
             controller.Post("TestValue2");
             controller.Post("TestValueBob");
@@ -46,7 +48,8 @@ namespace SimpleWebApi.Tests.Controllers
         public void GetById_ReturnsItem()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            var service = new Mock<IAPIService>();
+            ValuesController controller = new ValuesController(service.Object);
             controller.Put(5, "TestValue");
 
             // Act
@@ -60,7 +63,10 @@ namespace SimpleWebApi.Tests.Controllers
         public void GetById_ReturnsNullOnNoItem()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
+            var service = new Mock<IAPIService>();
+            //service.Setup(s => s.GetValue_ByID(It.IsAny<int>())).Returns(new Value() { Name = "value" + 5 });
+            service.Setup(s => s.GetValue_ByID(It.IsAny<int>())).Returns<IValue>(null);
+            ValuesController controller = new ValuesController(service.Object);
 
             // Act
             string result = controller.Get(5);
@@ -100,14 +106,15 @@ namespace SimpleWebApi.Tests.Controllers
         public void Delete_RemovesItem()
         {
             // Arrange
-            ValuesController controller = new ValuesController();
-            controller.Put(5,"value");
+            var service = new Mock<IAPIService>();
+            service.Setup(s => s.DeleteValue(5)).Verifiable();
+            ValuesController controller = new ValuesController(service.Object);
 
             // Act
             controller.Delete(5);
 
             // Assert
-            Assert.IsNull(controller.Get(5));
+            service.Verify();
         }
     
     }

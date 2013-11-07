@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SimpleAPIService
 {
-    public interface IValue
+    public class Value:IValue
     {
-        string Name {get;}
+        public string Name { get; set; }
     }
 }

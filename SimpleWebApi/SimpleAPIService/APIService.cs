@@ -37,5 +37,14 @@ namespace SimpleAPIService
         {
             throw new NotImplementedException();
         }
+
+        public void DeleteValue(int ID)
+        {
+            throw new NotImplementedException();
+        }
+        public void DeleteValues(IList<int> ID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
